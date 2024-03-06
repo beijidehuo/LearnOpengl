@@ -55,7 +55,9 @@ int main() {
 
         // render
         // ------
+        // glClearColor 状态设置函数，设置清空屏幕所用的颜色
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
+        // glClear 状态使用函数，使用当前状态来获取应该清楚的颜色
         glClear(GL_COLOR_BUFFER_BIT);
 
         // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
