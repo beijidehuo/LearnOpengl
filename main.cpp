@@ -12,6 +12,8 @@ const unsigned int SCR_WIDTH = 800;
 const unsigned int SCR_HEIGHT = 600;
 
 int main() {
+    // opengl 多平台，所以不会给你创建上下文，显示窗口，处理用户输入，所以这些都需要自己来做
+    // glfw 是一个专门针对OpenGL的C语言库，它提供了一些渲染物体所需的最低限度的接口，比如窗口，输入，OpenGL上下文，以及基本的OpenGL功能
     // glfw: initialize and configure
     // ------------------------------
     glfwInit();
@@ -34,7 +36,10 @@ int main() {
     glfwMakeContextCurrent(window);
     glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
 
+    // glad 帮我们找到对应显卡的函数指针，所以在调用任何OpenGL的函数之前，我们需要初始化glad
     // glad: load all OpenGL function pointers
+    // 调用任何 opengl 函数前需要初始化 opengl 函数指针
+    // 将对应驱动的指针函数传给 glfwGetProcAddress
     // ---------------------------------------
     if (!gladLoadGLLoader((GLADloadproc) glfwGetProcAddress)) {
         std::cout << "Failed to initialize GLAD" << std::endl;
