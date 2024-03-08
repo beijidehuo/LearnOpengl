@@ -46,6 +46,108 @@ int main() {
         return -1;
     }
 
+    //-------------------------------------------------------------------------------------------
+    // 定义 顶点数据
+    float vertices[] = {
+            -0.5f, -0.5f, 0.0f, // left
+            0.5f, -0.5f, 0.0f, // right
+            0.0f, 0.5f, 0.0f  // top
+    };
+
+    //-------------------------------------------------------------------------------------------
+    // 创建顶点缓冲对象
+    unsigned int VBO;
+    unsigned int VAO;
+    glGenVertexArrays(1, &VAO);
+//    glBindVertexArray(VAO);
+    glGenBuffers(1, &VBO);
+    // 绑定缓冲对象
+    glBindBuffer(GL_ARRAY_BUFFER, VBO);
+    // 将顶点数据复制到缓冲对象
+    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+
+    //-------------------------------------------------------------------------------------------
+    // 设置顶点属性指针
+    // 顶点属性指针告诉OpenGL该如何解析顶点数据
+    // 顶点属性位置值为0
+    // 顶点属性大小为3
+    // 数据类型为float
+    // 步长为3 * sizeof(float)
+    // 偏移量为0
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void *) 0);
+    // 启用顶点属性
+    glEnableVertexAttribArray(0);
+    glBindVertexArray(VAO);
+
+    //-------------------------------------------------------------------------------------------
+    // 创建顶点着色器
+    const char *vertexShaderSource = "#version 330 core\n"
+                                     "layout (location = 0) in vec3 aPos;\n"
+                                     "void main()\n"
+                                     "{\n"
+                                     "   gl_Position = vec4(aPos.x, aPos.y, aPos.z, 1.0);\n"
+                                     "}\0";
+    // 存放 shader buffer
+    unsigned int vertexShader;
+    vertexShader = glCreateShader(GL_VERTEX_SHADER);
+    // 复制 shader 源码到 显卡上的 buffer
+    glShaderSource(vertexShader, 1, &vertexShaderSource, nullptr);
+    // 编译 shader
+    glCompileShader(vertexShader);
+    // 检查 shader 编译是否成功
+    int success;
+    char infoLog[512];
+    glGetShaderiv(vertexShader, GL_COMPILE_STATUS, &success);
+    if (!success) {
+        glGetShaderInfoLog(vertexShader, 512, nullptr, infoLog);
+        std::cout << "ERROR::SHADER::VERTEX::COMPILATION_FAILED\n" << infoLog << std::endl;
+    }
+
+    //-------------------------------------------------------------------------------------------
+    // 创建片段着色器
+    const char *fragmentShaderSource = "#version 330 core\n"
+                                       "out vec4 FragColor;\n"
+                                       "void main()\n"
+                                       "{\n"
+                                       "   FragColor = vec4(1.0f, 0.5f, 0.2f, 1.0f);\n"
+                                       "}\n\0";
+    // 存放 shader buffer
+    unsigned int fragmentShader;
+    fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
+    // 复制 shader 源码到 显卡上的 buffer
+    glShaderSource(fragmentShader, 1, &fragmentShaderSource, nullptr);
+    // 编译 shader
+    glCompileShader(fragmentShader);
+    // 检查 shader 编译是否成功
+    glGetShaderiv(fragmentShader, GL_COMPILE_STATUS, &success);
+    if (!success) {
+        glGetShaderInfoLog(fragmentShader, 512, nullptr, infoLog);
+        std::cout << "ERROR::SHADER::FRAGMENT::COMPILATION_FAILED\n" << infoLog << std::endl;
+    }
+
+    //-------------------------------------------------------------------------------------------
+    // 创建着色器程序
+    unsigned int shaderProgram;
+    shaderProgram = glCreateProgram();
+    // 将顶点着色器和片段着色器链接到着色器程序
+    glAttachShader(shaderProgram, vertexShader);
+    glAttachShader(shaderProgram, fragmentShader);
+    glLinkProgram(shaderProgram);
+    // 检查着色器程序链接是否成功
+    glGetProgramiv(shaderProgram, GL_LINK_STATUS, &success);
+    if (!success) {
+        glGetProgramInfoLog(shaderProgram, 512, nullptr, infoLog);
+        std::cout << "ERROR::SHADER::PROGRAM::LINK_FAILED\n" << infoLog << std::endl;
+    }
+    // 使用这个着色器
+    glUseProgram(shaderProgram);
+    // 删除着色器
+    glDeleteShader(vertexShader);
+    glDeleteShader(fragmentShader);
+
+
+
+    glDrawArrays(GL_TRIANGLES, 0, 3);
 
     // render loop
     // -----------
