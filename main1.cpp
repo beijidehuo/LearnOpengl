@@ -46,38 +46,10 @@ int main() {
         return -1;
     }
 
-    //-------------------------------------------------------------------------------------------
-    // 定义 顶点数据
-    float vertices[] = {
-            -0.5f, -0.5f, 0.0f, // left
-            0.5f, -0.5f, 0.0f, // right
-            0.0f, 0.5f, 0.0f  // top
-    };
 
-    //-------------------------------------------------------------------------------------------
-    // 创建顶点缓冲对象
-    unsigned int VBO;
-    unsigned int VAO;
-    glGenVertexArrays(1, &VAO);
-//    glBindVertexArray(VAO);
-    glGenBuffers(1, &VBO);
-    // 绑定缓冲对象
-    glBindBuffer(GL_ARRAY_BUFFER, VBO);
-    // 将顶点数据复制到缓冲对象
-    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
 
-    //-------------------------------------------------------------------------------------------
-    // 设置顶点属性指针
-    // 顶点属性指针告诉OpenGL该如何解析顶点数据
-    // 顶点属性位置值为0
-    // 顶点属性大小为3
-    // 数据类型为float
-    // 步长为3 * sizeof(float)
-    // 偏移量为0
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void *) 0);
-    // 启用顶点属性
-    glEnableVertexAttribArray(0);
-    glBindVertexArray(VAO);
+
+
 
     //-------------------------------------------------------------------------------------------
     // 创建顶点着色器
@@ -139,15 +111,49 @@ int main() {
         glGetProgramInfoLog(shaderProgram, 512, nullptr, infoLog);
         std::cout << "ERROR::SHADER::PROGRAM::LINK_FAILED\n" << infoLog << std::endl;
     }
-    // 使用这个着色器
-    glUseProgram(shaderProgram);
+
     // 删除着色器
     glDeleteShader(vertexShader);
     glDeleteShader(fragmentShader);
 
+    //-------------------------------------------------------------------------------------------
+    // 定义 顶点数据
+    float vertices[] = {
+            -0.5f, -0.5f, 0.0f, // left
+            0.5f, -0.5f, 0.0f, // right
+            0.0f, 0.5f, 0.0f  // top
+    };
 
+    //-------------------------------------------------------------------------------------------
+    // 创建顶点缓冲对象
+    unsigned int VBO;
+//    glBindVertexArray(VAO);
+    unsigned int VAO;
+    glGenBuffers(1, &VBO);
 
-    glDrawArrays(GL_TRIANGLES, 0, 3);
+    glGenVertexArrays(1, &VAO);
+    glBindVertexArray(VAO);
+
+    // 绑定缓冲对象
+    glBindBuffer(GL_ARRAY_BUFFER, VBO);
+    // 将顶点数据复制到缓冲对象
+    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+
+    //-------------------------------------------------------------------------------------------
+    // 设置顶点属性指针
+    // 顶点属性指针告诉OpenGL该如何解析顶点数据
+    // 顶点属性位置值为0
+    // 顶点属性大小为3
+    // 数据类型为float
+    // 步长为3 * sizeof(float)
+    // 偏移量为0
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void *) 0);
+    // 启用顶点属性
+    glEnableVertexAttribArray(0);
+
+//    glBindBuffer(GL_ARRAY_BUFFER, 0);
+//    glBindVertexArray(0);
+
 
     // render loop
     // -----------
@@ -163,12 +169,23 @@ int main() {
         // glClear 状态使用函数，使用当前状态来获取应该清楚的颜色
         glClear(GL_COLOR_BUFFER_BIT);
 
+        // 使用这个着色器
+        glUseProgram(shaderProgram);
+
+        glBindVertexArray(VAO);
+
+        glDrawArrays(GL_TRIANGLES, 0, 3);
+
         // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
         // -------------------------------------------------------------------------------
         glfwSwapBuffers(window);
         // 更新事件
         glfwPollEvents();
     }
+
+    glDeleteVertexArrays(1, &VAO);
+    glDeleteBuffers(1, &VBO);
+    glDeleteProgram(shaderProgram);
 
     // glfw: terminate, clearing all previously allocated GLFW resources.
     // ------------------------------------------------------------------
