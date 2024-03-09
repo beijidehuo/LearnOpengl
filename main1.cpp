@@ -117,27 +117,63 @@ int main() {
     glDeleteShader(fragmentShader);
 
     //-------------------------------------------------------------------------------------------
-    // 定义 顶点数据
+    // 定义 顶点数据 三角形
+//    float vertices[] = {
+//            -0.5f, -0.5f, 0.0f, // left
+//            0.5f, -0.5f, 0.0f, // right
+//            0.0f, 0.5f, 0.0f  // top
+//    };
+
+    // 作业1
     float vertices[] = {
-            -0.5f, -0.5f, 0.0f, // left
-            0.5f, -0.5f, 0.0f, // right
-            0.0f, 0.5f, 0.0f  // top
+            0.5f, 0.5f, 0.0f, //
+            0.5f, -0.5f, 0.0f, //
+            0.0f, -0.5f, 0.0f, //
+            0.0f, -0.5f, 0.0f, //
+            -0.5f, -0.5f, 0.0f, //
+            -0.5f, 0.5f, 0.0f, //
     };
+
+    // 定义 顶点数据 四边形
+//    float vertices[] = {
+//            0.5f, 0.5f, 0.0f, // 右上角
+//            0.5f, -0.5f, 0.0f, // 右下角
+//            -0.5f, -0.5f, 0.0f, // 左下角
+//            -0.5f, 0.5f, 0.0f // 左上角
+//    };
+
+    unsigned int indices[] = {
+        0, 1, 3,
+        1, 2, 3
+    };
+
+    //-------------------------------------------------------------------------------------------
+    // 创建索引缓冲对象
+    unsigned int EBO;
+    glGenBuffers(1, &EBO);
+
 
     //-------------------------------------------------------------------------------------------
     // 创建顶点缓冲对象
     unsigned int VBO;
 //    glBindVertexArray(VAO);
     unsigned int VAO;
+    // genbuffers 第一个参数是生成几个缓冲对象的意思，如果 VBO 是个数组，那么就会生成对应数量的缓冲对象
     glGenBuffers(1, &VBO);
 
     glGenVertexArrays(1, &VAO);
     glBindVertexArray(VAO);
 
     // 绑定缓冲对象
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+    // 将顶点索引复制到缓冲对象
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
+    // 绑定缓冲对象
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
     // 将顶点数据复制到缓冲对象
     glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+
+
 
     //-------------------------------------------------------------------------------------------
     // 设置顶点属性指针
@@ -154,6 +190,9 @@ int main() {
 //    glBindBuffer(GL_ARRAY_BUFFER, 0);
 //    glBindVertexArray(0);
 
+
+    //-------------------------------------------------------------------------------------------
+//    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
     // render loop
     // -----------
@@ -172,9 +211,13 @@ int main() {
         // 使用这个着色器
         glUseProgram(shaderProgram);
 
-        glBindVertexArray(VAO);
 
-        glDrawArrays(GL_TRIANGLES, 0, 3);
+        glBindVertexArray(VAO);
+//
+        glDrawArrays(GL_TRIANGLES, 0, 6);
+
+
+//        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
         // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
         // -------------------------------------------------------------------------------
@@ -185,6 +228,7 @@ int main() {
 
     glDeleteVertexArrays(1, &VAO);
     glDeleteBuffers(1, &VBO);
+    glDeleteBuffers(1, &EBO);
     glDeleteProgram(shaderProgram);
 
     // glfw: terminate, clearing all previously allocated GLFW resources.
