@@ -139,7 +139,7 @@ int main() {
         std::cout << "ERROR::SHADER::PROGRAM::LINK_FAILED\n" << infoLog << std::endl;
     }
 
-    // 创建着色器程序2
+    // 创建着色器程序2 test push
     unsigned int shaderProgram2;
     shaderProgram2 = glCreateProgram();
     // 将顶点着色器和片段着色器链接到着色器程序
