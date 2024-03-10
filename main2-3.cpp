@@ -65,7 +65,7 @@ int main() {
         return -1;
     }
 
-    Shader ourShader(R"(E:\Study\beijidehuoGit\LearnOpengl\Shaders\shader-simple-vs.glsl)", R"(E:\Study\beijidehuoGit\LearnOpengl\Shaders\shader-simple-fs.glsl)");
+    Shader ourShader(R"(D:\Study\beijidehuoGit\LearnOpengl\Shaders\shader-simple-vs.glsl)", R"(D:\Study\beijidehuoGit\LearnOpengl\Shaders\shader-simple-fs.glsl)");
 
     // set up vertex data (and buffer(s)) and configure vertex attributes
     // ------------------------------------------------------------------
